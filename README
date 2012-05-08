@@ -1,0 +1,40 @@
+
+For those familiar with Git:
+
+    git clone git@github.com:cbeams/spring-3.1-profiles-xml.git
+
+Or if you prefer using Subversion:
+
+    svn co http://svn.github.com/cbeams/spring-3.1-profiles-xml.git spring-3.1-profiles-xml.git
+
+Once checked out, you can build from the command line using either Gradle or
+Maven.  If you're new to Gradle, don't worry -- there's nothing for you to
+install.  Simply use the 'gradlew' (or 'gradlew.bat' on windows) script within
+the root directory of the project:
+
+    >$ ./gradlew build
+
+And the following will give you a list of all available tasks:
+
+    >$ ./gradlew tasks
+
+If necessary, this 'Gradle wrapper' script will download a distribution of
+Gradle for you.
+
+Generate project metadata appropriate to your IDE with
+
+    >$ ./gradlew eclipse
+        - or -
+    >$ ./gradlew idea
+
+
+If you prefer Maven, you can simply type:
+
+    >$ mvn test
+
+If you're using an IDE that supports Maven-based projects, you can import the
+project directly from its POM.  Otherwise, generate IDE metadata with
+
+    >$ mvn eclipse:eclipse
+        - or -
+    >$ mvn idea:idea
