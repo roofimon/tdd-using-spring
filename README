@@ -38,3 +38,5 @@ project directly from its POM.  Otherwise, generate IDE metadata with
     >$ mvn eclipse:eclipse
         - or -
     >$ mvn idea:idea
+
+Resources https://www.dropbox.com/sh/tj53sksnfhvlp3z/AACj91GakD8F5X1KqjmkxwB3a?dl=0
