@@ -9,6 +9,7 @@ package com.bank.domain;
  *
  * @author TwinP
  */
+@SuppressWarnings("serial")
 public class InvalidDepositAmountException extends Exception {
     private double attemptedAmount;
     /**
