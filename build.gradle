@@ -7,7 +7,7 @@ apply plugin: 'idea'
 apply from: 'src/build/admin-tasks.gradle'
 
 repositories {
-    mavenRepo urls: 'http://maven.springframework.org/milestone'
+    //mavenRepo urls: 'http://maven.springframework.org/milestone'
     mavenCentral()
 }
 
