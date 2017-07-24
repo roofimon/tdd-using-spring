@@ -15,6 +15,8 @@
  */
 package com.bank.domain;
 
+import java.time.LocalTime;
+
 import static java.lang.String.format;
 
 public class TransferReceipt {
@@ -25,6 +27,15 @@ public class TransferReceipt {
     private Account initialDestinationAccountCopy;
     private Account finalSourceAccountCopy;
     private Account finalDestinationAccountCopy;
+    private LocalTime transactionTime;
+
+    public void setTransactionTime(LocalTime transactionTime) {
+        this.transactionTime = transactionTime;
+    }
+
+    public LocalTime getTransactionTime() {
+        return this.transactionTime;
+    }
 
     public void setTransferAmount(double transferAmount) {
         this.transferAmount = transferAmount;
