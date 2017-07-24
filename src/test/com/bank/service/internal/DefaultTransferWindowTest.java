@@ -1,14 +1,10 @@
 package com.bank.service.internal;
 
-import net.sf.cglib.core.Local;
+import com.bank.domain.DefaultTransferWindow;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 
 public class DefaultTransferWindowTest {
     //private final
@@ -39,16 +35,4 @@ public class DefaultTransferWindowTest {
         }
     }
 
-    class DefaultTransferWindow {
-        private LocalTime open;
-        private LocalTime close;
-        public DefaultTransferWindow(String open, String close) {
-            this.open = LocalTime.parse(open);
-            this.close = LocalTime.parse(close);
-        }
-
-        public boolean isValidTimeForTransferMoney(LocalTime transactionTime) {
-            return (transactionTime.isAfter(open))&&(transactionTime.isBefore(close));
-        }
-    }
 }
