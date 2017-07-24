@@ -16,7 +16,7 @@ public class DefaultTransferWindowTest {
 
     @Test
     public void withinInValidTransferWindow() {
-        CurrentTime currentTime = new CurrentTime("22:05:59");
+        CurrentTime currentTime = new CurrentTime("23:00:00");
         DefaultTransferWindow transferWindow = new DefaultTransferWindow("10:00:00", "22:00:00");
         Assert.assertFalse(transferWindow.isValidTimeForTransferMoney(currentTime.getCurrentTime()));
     }

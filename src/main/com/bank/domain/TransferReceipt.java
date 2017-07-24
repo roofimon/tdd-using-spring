@@ -29,12 +29,9 @@ public class TransferReceipt {
     private Account finalDestinationAccountCopy;
     private LocalTime transactionTime;
 
-    public void setTransactionTime(LocalTime transactionTime) {
-        this.transactionTime = transactionTime;
-    }
 
-    public LocalTime getTransactionTime() {
-        return this.transactionTime;
+    public TransferReceipt(LocalTime transactionTime) {
+        this.transactionTime = transactionTime;
     }
 
     public void setTransferAmount(double transferAmount) {

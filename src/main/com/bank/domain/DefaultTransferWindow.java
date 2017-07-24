@@ -13,4 +13,11 @@ public class DefaultTransferWindow {
     public boolean isValidTimeForTransferMoney(LocalTime transactionTime) {
         return (transactionTime.isAfter(open))&&(transactionTime.isBefore(close));
     }
+
+    public LocalTime getOpen() {
+        return this.open;
+    }
+    public LocalTime getClose() {
+        return this.close;
+    }
 }

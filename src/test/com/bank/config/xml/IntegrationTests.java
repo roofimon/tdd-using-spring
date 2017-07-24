@@ -18,6 +18,7 @@ package com.bank.config.xml;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import com.bank.service.internal.InvalidTransferWindow;
 import org.junit.Test;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
@@ -28,7 +29,7 @@ import com.bank.service.TransferService;
 public class IntegrationTests {
 
     @Test
-    public void transferTenDollars() throws InsufficientFundsException {
+    public void transferTenDollars() throws InsufficientFundsException, InvalidTransferWindow {
         GenericXmlApplicationContext ctx = new GenericXmlApplicationContext();
         ctx.getEnvironment().setActiveProfiles("dev");
         ctx.load("classpath:/com/bank/config/xml/transfer-service-config.xml");

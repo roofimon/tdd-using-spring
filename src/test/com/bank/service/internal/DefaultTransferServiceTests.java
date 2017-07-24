@@ -5,6 +5,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+import com.bank.domain.CurrentTime;
+import com.bank.domain.DefaultTransferWindow;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,9 +17,6 @@ import com.bank.repository.AccountRepository;
 import com.bank.repository.internal.SimpleAccountRepository;
 import com.bank.service.FeePolicy;
 import com.bank.service.TransferService;
-import com.bank.service.internal.FlatFeePolicy;
-import com.bank.service.internal.DefaultTransferService;
-import com.bank.service.internal.ZeroFeePolicy;
 
 public class DefaultTransferServiceTests {
 
@@ -28,14 +27,37 @@ public class DefaultTransferServiceTests {
     public void setUp() {
         accountRepository = new SimpleAccountRepository();
         FeePolicy feePolicy = new ZeroFeePolicy();
-        transferService = new DefaultTransferService(accountRepository, feePolicy);
+        CurrentTime currentTime = new CurrentTime(null);
+        DefaultTransferWindow transferWindow = new DefaultTransferWindow("06:00:00", "22:00:00");
+        transferService = new DefaultTransferService(accountRepository, feePolicy, currentTime, transferWindow);
 
         assertThat(accountRepository.findById(A123_ID).getBalance(), equalTo(A123_INITIAL_BAL));
         assertThat(accountRepository.findById(C456_ID).getBalance(), equalTo(C456_INITIAL_BAL));
     }
 
     @Test
-    public void testTransfer() throws InsufficientFundsException {
+    public void invalidTransferWindow() {
+        double transferAmount = 100.00;
+        CurrentTime currentTime = new CurrentTime("23:00:00");
+        DefaultTransferWindow transferWindow = new DefaultTransferWindow("06:00:00", "22:00:00");
+        accountRepository = new SimpleAccountRepository();
+        FeePolicy feePolicy = new ZeroFeePolicy();
+        transferService = new DefaultTransferService(accountRepository, feePolicy, currentTime, transferWindow);
+
+        try {
+            transferService.transfer(transferAmount, A123_ID, C456_ID);
+            fail("expected InvalidTransactionWindowTime");
+        } catch (InsufficientFundsException e) {
+            //e.printStackTrace();
+        } catch (InvalidTransferWindow invalidTransferWindow) {
+            //invalidTransferWindow.printStackTrace();
+        }
+        assertThat(accountRepository.findById(A123_ID).getBalance(), equalTo(A123_INITIAL_BAL));
+        assertThat(accountRepository.findById(C456_ID).getBalance(), equalTo(C456_INITIAL_BAL));
+    }
+
+    @Test
+    public void testTransfer() throws InsufficientFundsException, InvalidTransferWindow {
         double transferAmount = 100.00;
 
         TransferReceipt receipt = transferService.transfer(transferAmount, A123_ID, C456_ID);
@@ -49,7 +71,7 @@ public class DefaultTransferServiceTests {
     }
 
     @Test
-    public void testInsufficientFunds() {
+    public void testInsufficientFunds() throws InvalidTransferWindow {
         double overage = 9.00;
         double transferAmount = A123_INITIAL_BAL + overage;
 
@@ -66,7 +88,7 @@ public class DefaultTransferServiceTests {
     }
 
     @Test
-    public void testNonExistentSourceAccount() throws InsufficientFundsException {
+    public void testNonExistentSourceAccount() throws InsufficientFundsException, InvalidTransferWindow {
         try {
             transferService.transfer(1.00, Z999_ID, C456_ID);
             fail("expected AccountNotFoundException");
@@ -77,7 +99,7 @@ public class DefaultTransferServiceTests {
     }
 
     @Test
-    public void testNonExistentDestinationAccount() throws InsufficientFundsException {
+    public void testNonExistentDestinationAccount() throws InsufficientFundsException, InvalidTransferWindow {
         try {
             transferService.transfer(1.00, A123_ID, Z999_ID);
             fail("expected AccountNotFoundException");
@@ -88,7 +110,7 @@ public class DefaultTransferServiceTests {
     }
 
     @Test
-    public void testZeroTransferAmount() throws InsufficientFundsException {
+    public void testZeroTransferAmount() throws InsufficientFundsException, InvalidTransferWindow {
         try {
             transferService.transfer(0.00, A123_ID, C456_ID);
             fail("expected IllegalArgumentException");
@@ -97,7 +119,7 @@ public class DefaultTransferServiceTests {
     }
 
     @Test
-    public void testNegativeTransferAmount() throws InsufficientFundsException {
+    public void testNegativeTransferAmount() throws InsufficientFundsException, InvalidTransferWindow {
         try {
             transferService.transfer(-100.00, A123_ID, C456_ID);
             fail("expected IllegalArgumentException");
@@ -106,7 +128,7 @@ public class DefaultTransferServiceTests {
     }
 
     @Test
-    public void testTransferAmountLessThanOneCent() throws InsufficientFundsException {
+    public void testTransferAmountLessThanOneCent() throws InsufficientFundsException, InvalidTransferWindow {
         try {
             transferService.transfer(0.009, A123_ID, C456_ID);
             fail("expected IllegalArgumentException");
@@ -115,7 +137,7 @@ public class DefaultTransferServiceTests {
     }
 
     @Test
-    public void testCustomizedMinimumTransferAmount() throws InsufficientFundsException {
+    public void testCustomizedMinimumTransferAmount() throws InsufficientFundsException, InvalidTransferWindow {
         transferService.transfer(1.00, A123_ID, C456_ID); // should be fine
         transferService.setMinimumTransferAmount(10.00);
         transferService.transfer(10.00, A123_ID, C456_ID); // fine against new minimum
@@ -127,10 +149,12 @@ public class DefaultTransferServiceTests {
     }
 
     @Test
-    public void testNonZeroFeePolicy() throws InsufficientFundsException {
+    public void testNonZeroFeePolicy() throws InsufficientFundsException, InvalidTransferWindow {
         double flatFee = 5.00;
         double transferAmount = 10.00;
-        transferService = new DefaultTransferService(accountRepository, new FlatFeePolicy(flatFee));
+        CurrentTime currentTime = new CurrentTime(null);
+        DefaultTransferWindow transferWindow = new DefaultTransferWindow("6:00:00", "22:00:00");
+        transferService = new DefaultTransferService(accountRepository, new FlatFeePolicy(flatFee), currentTime, transferWindow);
         transferService.transfer(transferAmount, A123_ID, C456_ID);
         assertThat(accountRepository.findById(A123_ID).getBalance(), equalTo(A123_INITIAL_BAL - transferAmount - flatFee));
         assertThat(accountRepository.findById(C456_ID).getBalance(), equalTo(C456_INITIAL_BAL + transferAmount));
