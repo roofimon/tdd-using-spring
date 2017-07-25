@@ -27,7 +27,7 @@ public class DefaultTransferServiceTests {
     public void setUp() {
         accountRepository = new SimpleAccountRepository();
         FeePolicy feePolicy = new ZeroFeePolicy();
-        CurrentTime currentTime = new CurrentTime(null);
+        CurrentTime currentTime = new CurrentTime();
         DefaultTransferWindow transferWindow = new DefaultTransferWindow("06:00:00", "22:00:00");
         transferService = new DefaultTransferService(accountRepository, feePolicy, currentTime, transferWindow);
 
@@ -152,8 +152,8 @@ public class DefaultTransferServiceTests {
     public void testNonZeroFeePolicy() throws InsufficientFundsException, InvalidTransferWindow {
         double flatFee = 5.00;
         double transferAmount = 10.00;
-        CurrentTime currentTime = new CurrentTime(null);
-        DefaultTransferWindow transferWindow = new DefaultTransferWindow("6:00:00", "22:00:00");
+        CurrentTime currentTime = new CurrentTime();
+        DefaultTransferWindow transferWindow = new DefaultTransferWindow("06:00:00", "22:00:00");
         transferService = new DefaultTransferService(accountRepository, new FlatFeePolicy(flatFee), currentTime, transferWindow);
         transferService.transfer(transferAmount, A123_ID, C456_ID);
         assertThat(accountRepository.findById(A123_ID).getBalance(), equalTo(A123_INITIAL_BAL - transferAmount - flatFee));
