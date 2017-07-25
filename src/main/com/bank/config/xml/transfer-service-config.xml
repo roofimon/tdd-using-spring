@@ -10,6 +10,8 @@
     <bean id="transferService" class="com.bank.service.internal.DefaultTransferService">
         <constructor-arg ref="accountRepository"/>
         <constructor-arg ref="feePolicy"/>
+        <constructor-arg ref="currentTime"/>
+        <constructor-arg ref="defaultTransferWindow"/>
     </bean>
 
     <bean id="accountRepository" class="com.bank.repository.internal.JdbcAccountRepository">
@@ -17,6 +19,13 @@
     </bean>
 
     <bean id="feePolicy" class="com.bank.service.internal.ZeroFeePolicy"/>
+
+    <bean id="currentTime" class="com.bank.domain.CurrentTime"/>
+
+    <bean id="defaultTransferWindow" class="com.bank.domain.DefaultTransferWindow">
+        <constructor-arg name="open"  type="String" value="06:00:00"/>
+        <constructor-arg name="close" type="String" value="22:00:00"/>
+    </bean>
 
     <beans profile="dev">
         <jdbc:embedded-database id="dataSource">
