@@ -4,14 +4,14 @@ import org.omg.CORBA.Current;
 
 import java.time.LocalTime;
 
-public class CurrentTime {
+public class LocalTimeWrapper {
 
     private String specificTime = null;
-    public CurrentTime(String initial){
+    public LocalTimeWrapper(String initial){
         this.specificTime = initial;
     }
 
-    public CurrentTime() {
+    public LocalTimeWrapper() {
 
     }
 

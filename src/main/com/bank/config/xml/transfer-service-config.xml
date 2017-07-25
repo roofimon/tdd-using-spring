@@ -10,7 +10,7 @@
     <bean id="transferService" class="com.bank.service.internal.DefaultTransferService">
         <constructor-arg ref="accountRepository"/>
         <constructor-arg ref="feePolicy"/>
-        <constructor-arg ref="currentTime"/>
+        <constructor-arg ref="localTimeWrapper"/>
         <constructor-arg ref="defaultTransferWindow"/>
     </bean>
 
@@ -20,7 +20,7 @@
 
     <bean id="feePolicy" class="com.bank.service.internal.ZeroFeePolicy"/>
 
-    <bean id="currentTime" class="com.bank.domain.CurrentTime"/>
+    <bean id="localTimeWrapper" class="com.bank.domain.LocalTimeWrapper"/>
 
     <bean id="defaultTransferWindow" class="com.bank.domain.DefaultTransferWindow">
         <constructor-arg name="open"  type="String" value="06:00:00"/>

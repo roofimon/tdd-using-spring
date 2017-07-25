@@ -31,16 +31,16 @@ public class DefaultTransferService implements TransferService {
     private final AccountRepository accountRepository;
     private final FeePolicy feePolicy;
     private double minimumTransferAmount = 1.00;
-    private CurrentTime currentTime;
+    private LocalTimeWrapper localTimeWrapper;
     private DefaultTransferWindow defaultTransferWindow;
 
     public DefaultTransferService(AccountRepository accountRepository,
                                   FeePolicy feePolicy,
-                                  CurrentTime currentTime,
+                                  LocalTimeWrapper localTimeWrapper,
                                   DefaultTransferWindow transferWindow) {
         this.accountRepository = accountRepository;
         this.feePolicy = feePolicy;
-        this.currentTime = currentTime;
+        this.localTimeWrapper = localTimeWrapper;
         this.defaultTransferWindow = transferWindow;
     }
 
@@ -56,7 +56,7 @@ public class DefaultTransferService implements TransferService {
             throw new IllegalArgumentException(format("transfer amount must be at least $%.2f", minimumTransferAmount));
         }
 
-        LocalTime transactionTime = this.currentTime.getCurrentTime();
+        LocalTime transactionTime = this.localTimeWrapper.getCurrentTime();
         if(!defaultTransferWindow.isValidTimeForTransferMoney(transactionTime)) {
             throw new InvalidTransferWindow("We only allow to transfer between " + defaultTransferWindow.getOpen() + " and " + defaultTransferWindow.getClose());
         }

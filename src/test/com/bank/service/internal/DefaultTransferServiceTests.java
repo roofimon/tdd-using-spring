@@ -5,7 +5,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import com.bank.domain.CurrentTime;
+import com.bank.domain.LocalTimeWrapper;
 import com.bank.domain.DefaultTransferWindow;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,9 +27,9 @@ public class DefaultTransferServiceTests {
     public void setUp() {
         accountRepository = new SimpleAccountRepository();
         FeePolicy feePolicy = new ZeroFeePolicy();
-        CurrentTime currentTime = new CurrentTime();
+        LocalTimeWrapper localTimeWrapper = new LocalTimeWrapper();
         DefaultTransferWindow transferWindow = new DefaultTransferWindow("06:00:00", "22:00:00");
-        transferService = new DefaultTransferService(accountRepository, feePolicy, currentTime, transferWindow);
+        transferService = new DefaultTransferService(accountRepository, feePolicy, localTimeWrapper, transferWindow);
 
         assertThat(accountRepository.findById(A123_ID).getBalance(), equalTo(A123_INITIAL_BAL));
         assertThat(accountRepository.findById(C456_ID).getBalance(), equalTo(C456_INITIAL_BAL));
@@ -38,11 +38,11 @@ public class DefaultTransferServiceTests {
     @Test
     public void invalidTransferWindow() {
         double transferAmount = 100.00;
-        CurrentTime currentTime = new CurrentTime("23:00:00");
+        LocalTimeWrapper localTimeWrapper = new LocalTimeWrapper("23:00:00");
         DefaultTransferWindow transferWindow = new DefaultTransferWindow("06:00:00", "22:00:00");
         accountRepository = new SimpleAccountRepository();
         FeePolicy feePolicy = new ZeroFeePolicy();
-        transferService = new DefaultTransferService(accountRepository, feePolicy, currentTime, transferWindow);
+        transferService = new DefaultTransferService(accountRepository, feePolicy, localTimeWrapper, transferWindow);
 
         try {
             transferService.transfer(transferAmount, A123_ID, C456_ID);
@@ -152,9 +152,9 @@ public class DefaultTransferServiceTests {
     public void testNonZeroFeePolicy() throws InsufficientFundsException, InvalidTransferWindow {
         double flatFee = 5.00;
         double transferAmount = 10.00;
-        CurrentTime currentTime = new CurrentTime();
+        LocalTimeWrapper localTimeWrapper = new LocalTimeWrapper();
         DefaultTransferWindow transferWindow = new DefaultTransferWindow("06:00:00", "22:00:00");
-        transferService = new DefaultTransferService(accountRepository, new FlatFeePolicy(flatFee), currentTime, transferWindow);
+        transferService = new DefaultTransferService(accountRepository, new FlatFeePolicy(flatFee), localTimeWrapper, transferWindow);
         transferService.transfer(transferAmount, A123_ID, C456_ID);
         assertThat(accountRepository.findById(A123_ID).getBalance(), equalTo(A123_INITIAL_BAL - transferAmount - flatFee));
         assertThat(accountRepository.findById(C456_ID).getBalance(), equalTo(C456_INITIAL_BAL + transferAmount));
