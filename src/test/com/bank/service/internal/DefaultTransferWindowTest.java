@@ -6,9 +6,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class DefaultTransferWindowTest {
-    //private final
     @Test
     public void withinValidTransferWindow() {
+        CurrentTime x = new CurrentTime();
         CurrentTime currentTime = new CurrentTime("12:05:59");
         DefaultTransferWindow transferWindow = new DefaultTransferWindow("10:00:00", "22:00:00");
         Assert.assertTrue(transferWindow.isValidTimeForTransferMoney(currentTime.getCurrentTime()));
