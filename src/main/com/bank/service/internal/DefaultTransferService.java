@@ -51,18 +51,15 @@ public class DefaultTransferService implements TransferService {
 
     @Override
     @Transactional
-    public TransferReceipt transfer(double amount, String srcAcctId, String dstAcctId) throws InsufficientFundsException, InvalidTransferWindow {
-        if (amount < minimumTransferAmount) {
-            throw new IllegalArgumentException(format("transfer amount must be at least $%.2f", minimumTransferAmount));
-        }
+    public TransferReceipt transfer(double amount, String srcAcctId, String dstAcctId)
+            throws InsufficientFundsException, InvalidTransferWindow {
 
         LocalTime transactionTime = this.localTimeWrapper.getCurrentTime();
-        if(!defaultTransferWindow.isValidTimeForTransferMoney(transactionTime)) {
-            throw new InvalidTransferWindow("We only allow to transfer between " + defaultTransferWindow.getOpen() + " and " + defaultTransferWindow.getClose());
-        }
+        checkEligibility(amount, transactionTime);
 
         Account srcAcct = accountRepository.findById(srcAcctId);
         Account dstAcct = accountRepository.findById(dstAcctId);
+
         double fee = feePolicy.calculateFee(amount);
         if (fee > 0) {
             srcAcct.debit(fee);
@@ -73,6 +70,10 @@ public class DefaultTransferService implements TransferService {
         accountRepository.updateBalance(srcAcct);
         accountRepository.updateBalance(dstAcct);
 
+        return getTransferReceipt(amount, transactionTime, srcAcct, dstAcct, fee);
+    }
+
+    private TransferReceipt getTransferReceipt(double amount, LocalTime transactionTime, Account srcAcct, Account dstAcct, double fee) {
         TransferReceipt receipt = new TransferReceipt(transactionTime);
         receipt.setInitialSourceAccount(srcAcct);
         receipt.setInitialDestinationAccount(dstAcct);
@@ -80,7 +81,17 @@ public class DefaultTransferService implements TransferService {
         receipt.setFeeAmount(fee);
         receipt.setFinalSourceAccount(srcAcct);
         receipt.setFinalDestinationAccount(dstAcct);
-
         return receipt;
+    }
+
+    private void checkEligibility(double amount, LocalTime transactionTime) throws InvalidTransferWindow {
+        if (amount < minimumTransferAmount) {
+            throw new IllegalArgumentException(format("transfer amount must be at least $%.2f", minimumTransferAmount));
+        }
+
+
+        if(!defaultTransferWindow.isValidTimeForTransferMoney(transactionTime)) {
+            throw new InvalidTransferWindow("We only allow to transfer between " + defaultTransferWindow.getOpen() + " and " + defaultTransferWindow.getClose());
+        }
     }
 }
