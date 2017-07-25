@@ -12,19 +12,14 @@ repositories {
 }
 
 dependencies {
-    //compile 'org.springframework:spring-context:3.1.0.M1'
-    // https://mvnrepository.com/artifact/org.springframework/spring-context
     compile group: 'org.springframework', name: 'spring-context', version: '3.1.0.RELEASE'
-    // https://mvnrepository.com/artifact/org.springframework/spring-jdbc
     compile group: 'org.springframework', name: 'spring-jdbc', version: '3.1.0.RELEASE'
 
-    //compile 'org.springframework:spring-jdbc:3.1.0.M1'
     compile 'cglib:cglib-nodep:2.2'
     compile 'hsqldb:hsqldb:1.8.0.10'
     compile 'commons-logging:commons-logging:1.1.1'
     compile 'log4j:log4j:1.2.16'
     compile 'javax.inject:javax.inject:1'
-    //testCompile 'org.springframework:spring-test:3.1.0.M1'
     testCompile 'junit:junit:4.7'
 }
 
@@ -35,18 +30,5 @@ targetCompatibility = 1.8
 
 task wee(type: Wrapper) {
     gradleVersion = '2.10' //we want gradle 2.10 to run this project
-}
-
-
-// consolidate source directories for ease of browsing
-sourceSets {
-    main {
-        java { srcDir 'src/main' }
-        resources { srcDir 'src/main' }
-    }
-    test {
-        java { srcDir 'src/test' }
-        resources { srcDir 'src/test' }
-    }
 }
 
