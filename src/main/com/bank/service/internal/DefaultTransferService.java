@@ -34,7 +34,10 @@ public class DefaultTransferService implements TransferService {
     private CurrentTime currentTime;
     private DefaultTransferWindow defaultTransferWindow;
 
-    public DefaultTransferService(AccountRepository accountRepository, FeePolicy feePolicy, CurrentTime currentTime, DefaultTransferWindow transferWindow) {
+    public DefaultTransferService(AccountRepository accountRepository,
+                                  FeePolicy feePolicy,
+                                  CurrentTime currentTime,
+                                  DefaultTransferWindow transferWindow) {
         this.accountRepository = accountRepository;
         this.feePolicy = feePolicy;
         this.currentTime = currentTime;
@@ -58,28 +61,23 @@ public class DefaultTransferService implements TransferService {
             throw new InvalidTransferWindow("We only allow to transfer between " + defaultTransferWindow.getOpen() + " and " + defaultTransferWindow.getClose());
         }
 
-        TransferReceipt receipt = new TransferReceipt(transactionTime);
-
         Account srcAcct = accountRepository.findById(srcAcctId);
         Account dstAcct = accountRepository.findById(dstAcctId);
-
-        receipt.setInitialSourceAccount(srcAcct);
-        receipt.setInitialDestinationAccount(dstAcct);
-
         double fee = feePolicy.calculateFee(amount);
         if (fee > 0) {
             srcAcct.debit(fee);
         }
-
-        receipt.setTransferAmount(amount);
-        receipt.setFeeAmount(fee);
-
         srcAcct.debit(amount);
         dstAcct.credit(amount);
 
         accountRepository.updateBalance(srcAcct);
         accountRepository.updateBalance(dstAcct);
 
+        TransferReceipt receipt = new TransferReceipt(transactionTime);
+        receipt.setInitialSourceAccount(srcAcct);
+        receipt.setInitialDestinationAccount(dstAcct);
+        receipt.setTransferAmount(amount);
+        receipt.setFeeAmount(fee);
         receipt.setFinalSourceAccount(srcAcct);
         receipt.setFinalDestinationAccount(dstAcct);
 
