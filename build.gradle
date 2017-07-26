@@ -1,17 +1,35 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.3.RELEASE")
+    }
+}
+
 group = 'org.springframework.samples'
 version = '1.0.0.SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-apply from: 'src/build/admin-tasks.gradle'
+apply plugin: 'org.springframework.boot'
+//apply from: 'src/build/admin-tasks.gradle'
 
 repositories {
-    //mavenRepo urls: 'http://maven.springframework.org/milestone'
     mavenCentral()
 }
 
 dependencies {
+    // tag::jetty[]
+    compile("org.springframework.boot:spring-boot-starter-web") {
+        exclude module: "spring-boot-starter-tomcat"
+    }
+    compile("org.springframework.boot:spring-boot-starter-jetty")
+    // end::jetty[]
+    // tag::actuator[]
+    compile("org.springframework.boot:spring-boot-starter-actuator")
+    // end::actuator[]
     compile group: 'org.springframework', name: 'spring-context', version: '3.1.0.RELEASE'
     compile group: 'org.springframework', name: 'spring-jdbc', version: '3.1.0.RELEASE'
 
