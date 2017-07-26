@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.bank.config.xml;
+package integration;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -31,7 +31,7 @@ public class IntegrationTests {
     public void transferTenDollars() throws InsufficientFundsException {
         GenericXmlApplicationContext ctx = new GenericXmlApplicationContext();
         ctx.getEnvironment().setActiveProfiles("dev");
-        ctx.load("classpath:/com/bank/config/xml/transfer-service-config.xml");
+        ctx.load("classpath:/integration/transfer-service-config.xml");
         ctx.refresh();
 
         TransferService transferService = ctx.getBean(TransferService.class);
