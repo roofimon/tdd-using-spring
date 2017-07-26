@@ -4,7 +4,7 @@ version = '1.0.0.SNAPSHOT'
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-apply from: 'src/build/admin-tasks.gradle'
+//apply from: 'src/build/admin-tasks.gradle'
 
 repositories {
     //mavenRepo urls: 'http://maven.springframework.org/milestone'
@@ -30,8 +30,8 @@ dependencies {
 
 [compileJava, compileTestJava]*.options*.compilerArgs = ['-Xlint:all']
 
-sourceCompatibility = 1.6
-targetCompatibility = 1.6
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 task wee(type: Wrapper) {
     gradleVersion = '2.10' //we want gradle 2.10 to run this project
