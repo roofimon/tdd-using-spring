@@ -4,6 +4,7 @@
 .project
 .settings
 build/
+target/
 out/
 .DS_Store
 src/.DS_Store
